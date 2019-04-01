@@ -107,6 +107,8 @@ server <- function(input, output) {
 
   output$plot <- renderPlot({
     
+    withProgress(message = 'Creating plot', style = "notification", value = 0.1, {
+    
     df <- read.csv(input$datafile$datapath,
                    header = input$header,
                    sep = input$sep,
@@ -114,6 +116,8 @@ server <- function(input, output) {
     
     df[,1] <- as.character(df[,1])
     df[,2] <- as.integer(df[,2])
+    
+    incProgress(0.25)
     
     #some required data cleaning
     colnames(df) <- c("ds", "y")
@@ -129,12 +133,19 @@ server <- function(input, output) {
     #Create a dataframe for the future
     future <- make_future_dataframe(m, periods = 365)
     
+    incProgress(0.5)
+    
     #Make a future prediction based on the fitted model
     forecast <- predict(m, future)
     
+    incProgress(0.75)
+    
     #Here, we plot known data points along with the model fit and future predictions.
     return(plot(m, forecast, xlabel = "Dates", ylabel = "Forecasted Value"))
-      
+    
+    incProgress(1)
+    
+    })
     })
     
   
