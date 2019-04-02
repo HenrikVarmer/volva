@@ -109,50 +109,50 @@ server <- function(input, output) {
     }
     
   })
-
+  
   output$plot <- renderPlot({
     
     withProgress(message = 'Creating plot', style = "notification", value = 0.1, {
-    
-    df <- read.csv(input$datafile$datapath,
-                   header = input$header,
-                   sep = input$sep,
-                   quote = input$quote)
-    
-    df[,1] <- as.character(df[,1])
-    df[,2] <- as.integer(df[,2])
-    
-    incProgress(0.25)
-    
-    #some required data cleaning
-    colnames(df) <- c("ds", "y")
-    
-    df$ds <- as.Date(df[,1], format = "%Y-%m-%d")
-    
-    df <- df %>% 
-      select(ds, y)
-
-    #Fit the prophet model to input data
-    m <- prophet(df)
-    
-    #Create a dataframe for the future
-    future <- make_future_dataframe(m, periods = 365)
-    
-    incProgress(0.5)
-    
-    #Make a future prediction based on the fitted model
-    forecast <- predict(m, future)
-    
-    incProgress(0.75)
-    
-    #Here, we plot known data points along with the model fit and future predictions.
-    return(plot(m, forecast, xlabel = "Dates", ylabel = "Forecasted Value"))
-    
-    incProgress(1)
-    
+      
+      df <- read.csv(input$datafile$datapath,
+                     header = input$header,
+                     sep = input$sep,
+                     quote = input$quote)
+      
+      df[,1] <- as.character(df[,1])
+      df[,2] <- as.numeric(df[,2])
+      
+      incProgress(0.25)
+      
+      #some required data cleaning
+      colnames(df) <- c("ds", "y")
+      
+      df$ds <- as.Date(df[,1], format = "%Y-%m-%d")
+      
+      df <- df %>% 
+        select(ds, y)
+      
+      #Fit the prophet model to input data
+      m <- prophet(df)
+      
+      #Create a dataframe for the future
+      future <- make_future_dataframe(m, periods = 365)
+      
+      incProgress(0.5)
+      
+      #Make a future prediction based on the fitted model
+      forecast <- predict(m, future)
+      
+      incProgress(0.75)
+      
+      #Here, we plot known data points along with the model fit and future predictions.
+      return(plot(m, forecast, xlabel = "Dates", ylabel = "Forecasted Value"))
+      
+      incProgress(1)
+      
     })
-    })
-   
+  })
+  
   
   output$prediction <- renderTable({
     
@@ -176,13 +176,21 @@ server <- function(input, output) {
       df <- df %>% 
         select(ds, y)
       
+      df <- as.data.frame(aggregate(df$y, by=list(df$ds), sum))
+      
+      #some required data cleaning
+      colnames(df) <- c("ds", "y")
+      
+      df$ds <- as.Date(df[,1], format = "%Y-%m-%d")
+      
+      df <- df %>% 
+        select(ds, y)
+      
       #Fit the prophet model to input data
       m <- prophet(df)
       
       #Create a dataframe for the future
       future <- make_future_dataframe(m, periods = 365)
-      
-      
       
       incProgress(0.5)
       
@@ -207,4 +215,3 @@ server <- function(input, output) {
 
 # Create Shiny app ----
 shinyApp(ui, server)
-
