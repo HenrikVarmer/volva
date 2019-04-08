@@ -132,6 +132,16 @@ server <- function(input, output) {
       df <- df %>% 
         select(ds, y)
       
+      df <- as.data.frame(aggregate(df$y, by=list(df$ds), sum))
+      
+      #some required data cleaning
+      colnames(df) <- c("ds", "y")
+      
+      df$ds <- as.Date(df[,1], format = "%Y-%m-%d")
+      
+      df <- df %>% 
+        select(ds, y)
+      
       #Fit the prophet model to input data
       m <- prophet(df)
       
