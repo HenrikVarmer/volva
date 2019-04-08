@@ -125,19 +125,12 @@ server <- function(input, output) {
       incProgress(0.25)
       
       #some required data cleaning
-      colnames(df) <- c("ds", "y")
-      
       df$ds <- as.Date(df[,1], format = "%Y-%m-%d")
       
-      df <- df %>% 
-        select(ds, y)
-      
-      df <- as.data.frame(aggregate(df$y, by=list(df$ds), sum))
+      df <- as.data.frame(aggregate(df[,2], by=list(df[,1]), sum))
       
       #some required data cleaning
       colnames(df) <- c("ds", "y")
-      
-      df$ds <- as.Date(df[,1], format = "%Y-%m-%d")
       
       df <- df %>% 
         select(ds, y)
@@ -166,7 +159,7 @@ server <- function(input, output) {
   
   output$prediction <- renderTable({
     
-    withProgress(message = 'Creating plot', style = "notification", value = 0.1, {
+    withProgress(message = 'Creating Prediction Table', style = "notification", value = 0.1, {
       
       df <- read.csv(input$datafile$datapath,
                      header = input$header,
@@ -179,19 +172,12 @@ server <- function(input, output) {
       incProgress(0.25)
       
       #some required data cleaning
-      colnames(df) <- c("ds", "y")
-      
       df$ds <- as.Date(df[,1], format = "%Y-%m-%d")
       
-      df <- df %>% 
-        select(ds, y)
-      
-      df <- as.data.frame(aggregate(df$y, by=list(df$ds), sum))
+      df <- as.data.frame(aggregate(df[,2], by=list(df[,1]), sum))
       
       #some required data cleaning
       colnames(df) <- c("ds", "y")
-      
-      df$ds <- as.Date(df[,1], format = "%Y-%m-%d")
       
       df <- df %>% 
         select(ds, y)
