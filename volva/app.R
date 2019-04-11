@@ -125,7 +125,7 @@ server <- function(input, output) {
       incProgress(0.25)
       
       #some required data cleaning
-      df$ds <- as.Date(df[,1], format = "%Y-%m-%d")
+      df$ds <- as.Date(as.character(df[,1]), format = "%Y-%m-%d")
       
       df <- as.data.frame(aggregate(df[,2], by=list(df[,1]), sum))
       
@@ -172,7 +172,7 @@ server <- function(input, output) {
       incProgress(0.25)
       
       #some required data cleaning
-      df$ds <- as.Date(df[,1], format = "%Y-%m-%d")
+      df$ds <- as.Date(as.character(df[,1]), format = "%Y-%m-%d")
       
       df <- as.data.frame(aggregate(df[,2], by=list(df[,1]), sum))
       
