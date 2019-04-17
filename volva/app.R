@@ -195,7 +195,7 @@ server <- function(input, output) {
       
       forecast <- as.data.frame(forecast[c('ds', 'yhat', 'yhat_lower', 'yhat_upper')])
       
-      forecast$ds <- date(forecast$ds)
+      #forecast$ds <- date(as.character((forecast$ds)))
       
       return(forecast)
       
